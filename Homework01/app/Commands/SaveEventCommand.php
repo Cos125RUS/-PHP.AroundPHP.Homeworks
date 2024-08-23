@@ -112,7 +112,7 @@ class SaveEventCommand extends Command
 
     }
 
-    private function showHelp()
+    private function showHelp(): void
 
     {
 

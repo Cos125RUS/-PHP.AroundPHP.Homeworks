@@ -17,7 +17,8 @@ class TgMessagesCommand extends Command
 
     function run(array $options = []): void
     {
+        $offset = $options['offset'] ?? 0;
         $tgApp = new TelegramSender($this->app->env('TELEGRAM_TOKEN'));
-        echo json_encode($tgApp->getMessages(0));
+        echo json_encode($tgApp->getMessages($offset));
     }
 }
