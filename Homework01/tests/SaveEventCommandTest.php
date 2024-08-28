@@ -18,6 +18,19 @@ class SaveEventCommandTest extends TestCase
         self::assertEquals($result, $isNeededResult);
     }
 
+    /**
+     * @testWith ["1 1 1 1 1", [1,1,1,1,1]]
+     *           ["* * * * *", [null,null,null,null,null]]
+     */
+    public function testGetCronValues(string $cron, array $check): void
+    {
+        $saveEventCommand = new SaveEventCommand(new Application(dirname(__DIR__)));
+
+        $result = $saveEventCommand->getCronValues($cron);
+
+        self::assertEquals($result, $check);
+    }
+
     public static function getDataProvider(): array
     {
         return [

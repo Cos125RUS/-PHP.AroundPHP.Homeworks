@@ -134,7 +134,7 @@ class SaveEventCommand extends Command
 
     }
 
-    private function getCronValues(string $cronString): array
+    public function getCronValues(string $cronString): array
 
     {
 
