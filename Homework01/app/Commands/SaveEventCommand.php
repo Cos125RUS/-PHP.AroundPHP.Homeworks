@@ -94,7 +94,7 @@ class SaveEventCommand extends Command
 
     }
 
-    private function isNeedHelp(array $options): bool
+    public function isNeedHelp(array $options): bool
 
     {
 
@@ -112,7 +112,7 @@ class SaveEventCommand extends Command
 
     }
 
-    private function showHelp(): void
+    public function showHelp(): void
 
     {
 
@@ -134,7 +134,7 @@ class SaveEventCommand extends Command
 
     }
 
-    private function getCronValues(string $cronString): array
+    public function getCronValues(string $cronString): array
 
     {
 
