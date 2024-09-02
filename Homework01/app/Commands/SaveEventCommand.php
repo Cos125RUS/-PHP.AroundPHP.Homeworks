@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Actions\EventSaver;
 use App\Application;
 use App\Database\SQLite;
 use App\Models\Event;
@@ -64,8 +65,10 @@ class SaveEventCommand extends Command
 
         ];
 
-        $this->saveEvent($params);
-
+//        $this->saveEvent($params);
+        $eventModel = new Event(new SQLite($this->app));
+        $eventSaver = new EventSaver($eventModel);
+        $eventSaver->handle($params);
     }
 
     private function getGetoptOptionValues(): array
@@ -140,13 +143,11 @@ class SaveEventCommand extends Command
 
         $cronValues = explode(" ", $cronString);
 
-        $cronValues = array_map(function ($item) {
+        return array_map(function ($item) {
 
             return $item === "*" ? null : $item;
 
         }, $cronValues);
-
-        return $cronValues;
 
     }
 
