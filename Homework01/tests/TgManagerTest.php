@@ -4,6 +4,9 @@ use App\Alarm\TgManager;
 use App\Application;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers TgManager
+ */
 class TgManagerTest extends TestCase
 {
     /**

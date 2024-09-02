@@ -5,6 +5,9 @@ use App\Commands\TgMessagesCommand;
 use App\EventSender\TelegramSender;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers TgMessagesCommand
+ */
 class TgMessagesCommandTest extends TestCase
 {
 
