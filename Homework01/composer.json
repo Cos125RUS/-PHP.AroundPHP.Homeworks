@@ -28,7 +28,10 @@
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
     ],
     "run-tests": [
-      "php .\\vendor\\bin\\phpunit .\\tests\\"
+      ".\\vendor\\bin\\phpunit -c .\\phpunit.xml"
+    ],
+    "run-coverage": [
+      "@php -d xdebug.mode=coverage .\\vendor\\bin\\phpunit --coverage-text .\\tests\\"
     ]
   },
   "config": {

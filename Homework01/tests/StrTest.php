@@ -3,6 +3,9 @@
 use App\Helpers\Str;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers Str
+ */
 class StrTest extends TestCase
 {
     /**
