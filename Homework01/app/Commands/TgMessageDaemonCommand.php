@@ -51,11 +51,11 @@ class TgMessageDaemonCommand extends Command
             $newMessages = $this->tgApp->getMessages($this->messages['offset']);
             if ($newMessages['result']) {
                 $this->messages['offset'] = $newMessages['offset'];
-                $this->messages['result'] = [...$this->messages['result'], ...$newMessages['result']['message']['chat']['id']];
+                $this->messages['result'] = [...$this->messages['result'], ...$newMessages['result']];
 
                 $this->saveHistory();
 
-                $textMessage = $newMessages['result']['message']['chat']['id'][0];
+                $textMessage = $newMessages['result'][0];
 
                 @[$command, $arg] = explode(" ", $textMessage, 2);
 

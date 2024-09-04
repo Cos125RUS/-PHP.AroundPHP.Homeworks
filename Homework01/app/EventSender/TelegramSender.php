@@ -46,7 +46,7 @@ class TelegramSender implements TelegramApi
             $user = $response['result'][0]['message']['from'];
 
             foreach ($response['result'] as $data) {
-                $result['message']['chat']['id'] = [...$result['message']['chat']['id'] ?? [], $data['message']['text']];
+                $result = [...$result, $data['message']['text']];
                 $offset = $data['update_id'] + 1;
             }
             curl_close($ch);

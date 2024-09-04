@@ -6,6 +6,7 @@ use App\Application;
 use App\Cache\Redis;
 use App\EventSender\TelegramSender;
 use Predis\Client;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class TgMessagesCommand extends Command
 {
@@ -13,7 +14,7 @@ class TgMessagesCommand extends Command
     protected TelegramSender $tgApp;
     protected Redis $redis;
     private int $offset;
-    private array|null $oldMessages;
+    private array|null|object $oldMessages;
 
 
     public function __construct(Application $app)
@@ -31,7 +32,11 @@ class TgMessagesCommand extends Command
 
     function run(array $options = [], TelegramSender $tgApp = null): void
     {
-        echo json_encode($this->receiveNewMessages());
+        try {
+            echo json_encode($this->receiveNewMessages()) . PHP_EOL;
+        } catch (InvalidArgumentException $e) {
+            echo $e->getMessage() . PHP_EOL;
+        }
 
 //        $offset = $options['offset'] ?? 0;
 //        if (!$tgApp) {
@@ -40,30 +45,31 @@ class TgMessagesCommand extends Command
 //        echo json_encode($tgApp->getMessages($offset));
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     private function receiveNewMessages(): array
     {
         $this->offset = $this->redis->get('tg_messages:offset', 0);
 
-        $result = $this->tgApp->getMessages($this->offset);
+        $newMessages = $this->tgApp->getMessages($this->offset);
 
-        $this->redis->set('tg_messages:offset', $result['offset'] ?? 0);
+        if ($newMessages['user']) {
+            $userId = $newMessages['user']['id'];
 
-        $this->oldMessages = json_decode($this->redis->get('tg_messages:old_messages'));
+            $this->redis->set('tg_messages:offset', $newMessages['offset'] ?? 0);
 
-        $messages = [];
+            $this->oldMessages = json_decode($this->redis->get('tg_messages:old_messages'), true);
 
-        foreach ($result['result'] ?? [] as $chatId => $newMessages) {
-            if (isset($this->oldMessages[$chatId])) {
-                $this->oldMessages[$chatId] = [...$this->oldMessages[$chatId], ...$newMessages];
+            if (isset($this->oldMessages[$userId])) {
+                $this->oldMessages[$userId] = [...$this->oldMessages[$userId], ...$newMessages];
             } else {
-                $this->oldMessages[$chatId] = $newMessages;
+                $this->oldMessages[$userId] = $newMessages;
             }
 
-            $messages[$chatId] = $this->oldMessages[$chatId];
+            $this->redis->set('tg_messages:old_messages', json_encode($this->oldMessages));
         }
 
-        $this->redis->set('tg_messages:old_messages', json_encode($this->oldMessages));
-
-        return $messages;
+        return $newMessages;
     }
 }
