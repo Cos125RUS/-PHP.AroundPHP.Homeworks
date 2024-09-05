@@ -16,12 +16,14 @@ class EventSender
         $this->queue = $queue;
     }
 
+    public function getMessages(int $offset = 0): array
+    {
+        return $this->telegram->getMessages($offset);
+    }
+
     public function sendMessage(string $receiver, string $message): void
     {
         $this->toQueue($receiver, $message);
-
-//        $this->telegram->sendMessage($receiver, $message);
-//        echo date('d.m.y H:i') . " Я отправил сообщение $message получателю с id $receiver\n";
     }
 
     public function handle(): void
